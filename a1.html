@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Oliver's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Oliver's Assignment 1!</h1>
+    <div class="header">
+    <main>
+      <section>
+        <h2>Circuit Photo</h2>
+        <img src="A1 Circuit.jpeg" alt="LED Circuit Photo" class="photo" />
+        <p>
+          This is the circuit setup. The leftmost red LED is connected to port 3, the yellow LED to port 4, the blue LED to port 5, and the rightmost red LED to port 6.
+        </p>
+      </section>
+
+      <section>
+        <h2>Circuit schematic, resistance calculation and graph</h2>
+        <img src="A1.jpg" alt="Circuit schematic, resistance calculation and graph" class="photo" />
+        <p>
+          This image shows the schematic, resistance calculation, and a graph of time vs. voltage. I used a resistor with a slightly higher resistance than calculated because the exact value wasn’t available, and I preferred to limit current for safety.
+        </p>
+      </section>
+
+      <section>
+        <h2>Circuit operation</h2>
+        <img src="A1 Ops.GIF" alt="LED circuit board operation" class="photo" />
+        <p>
+          This GIF shows the circuit in operation. Each LED blinks for one second in sequence from left to right, and the loop repeats indefinitely.
+        </p>
+      </section>
+
+      <section>
+        <h2>Code Snippet</h2>
+        <pre><code>
+int timer = 1000;  // Duration of each LED blink in milliseconds (1000 ms = 1 second)
+
+void setup() {
+  // Use a for loop to initialize each pin as an output
+  for (int thisPin = 3; thisPin < 7; thisPin++) {
+    pinMode(thisPin, OUTPUT);  // Initialize pins from 3 to 6
+  }
+}
+
+void loop() {
+  // Turn each LED on and off in sequence
+  for (int thisPin = 3; thisPin < 7; thisPin++) {
+    digitalWrite(thisPin, HIGH);  // Turn the LED on
+    delay(timer);                 // Keep it on for the set duration
+    digitalWrite(thisPin, LOW);   // Turn the LED off
+  }
+}
+
+/*
+  Modified from the original example code:
+  created 2006
+  by David A. Mellis
+  modified 30 Aug 2011
+  by Tom Igoe
+
+  This example code is in the public domain.
+
+  https://docs.arduino.cc/built-in-examples/control-structures/ForLoopIteration/
+*/
+        </code></pre>
+      </section>
+
+      <section>
+        <h2>Additional Questions</h2>
+        <p><strong>1.</strong> See Circuit schematic, resistance calculation and graph image above.</p>
+        <p>
+          <strong>2.</strong> The Arduino Uno has 13 digital ports that can be controlled independently. In theory, I could blink 13 LEDs individually. 
+          Assuming each LED draws 20 mA, the total current would be 260 mA. However, the board limits the total current to around 200 mA, 
+          meaning only about 10 LEDs can be lit simultaneously at the recommended 20 mA each.
+        </p>
+        <p>
+          <strong>4.</strong> In my testing, when each LED stayed on for only 5 ms, I could no longer distinguish the blinking.
+          This aligns with the persistence of vision effect (~20 ms). Since my circuit has four LEDs blinking in sequence, 
+          each LED’s 5 ms on-time adds up to a total cycle time of about 20 ms.
+        </p>
+        <p>
+          <strong>5.</strong> I asked ChatGPT for advice on how to make my website look better and easier to read after finishing the initial layout. It suggested improvements such as dividing the page into sections, using the "code" tag instead of "p" for code blocks, 
+            and applying various style enhancements. These suggestions were very helpful, and I plan to apply what I learned to my future works.
+        </p>
+        <p><em>All documentation for Assignment 1 is included above.</em></p>
+      </section>
+    </main>
+  </body>
+</html>
