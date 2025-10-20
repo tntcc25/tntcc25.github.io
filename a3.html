@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Oliver's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Oliver's Assignment 3!</h1>
+    <div class="header">
+    <main>
+      <section>
+        <h2>Circuit Photo</h2>
+        <img src="A3 circuit.jpeg" alt="LED Circuit Photo" class="photo" />
+        <p>
+          This is the circuit setup. The red LED is connected to port 3, the green LED is connected to port 5, the port that read voltage value after the photoresistor port A0.
+        </p>
+      </section>
+
+      <section>
+        <h2>Circuit schematic, resistance calculation and graph</h2>
+        <img src="A3 schematic.jpg" alt="Circuit schematic" class="photo" />
+        <p>
+          This image shows the circuit schematic.
+        </p>
+        <h3>
+          Voltage at the voltage divider and resistor calculation:
+        </h3>
+        <p>
+          I used a 10kΩ resistor because when I measured my photoresistor in my room, the value is between 1.9kΩ - 13.8kΩ, so I chose the resistor somewhere between the max and min value of my photoresistor for the best output range and reasonable sensitvity.
+          Antoher consideration is that I want a resistor that can limit current below the 40mA limit of the Arduino. As a result, 10kΩ resistor is the best fit.</p>
+        <p><strong>Voltage at the voltage divider:</strong></p>
+          <p>Becaused I used a 10kΩ resistor, according to V_out = V_in * R2 / (R1 + R2): R1 = 1.9k(min resistance of photoresistor), R2 = 10k, V_in = 5V: V_out = 4.2V. R1 = 13.8k(max resistance of photoresistor), R2 = 10k, V_in = 5V: V_out = 2.1V</p>
+          <p>so the voltage range when measuring at the voltage divider is between 2.1V to 4.2V. When convering to bit using V_out / V_in * 1024 equation: I get around 450 to 850 from A0.
+        </p>
+      </section>
+
+      <section>
+        <h2>Circuit operation</h2>
+        <img src="A3.GIF" alt="LED circuit board operation" class="photo" />
+        <p>
+          This GIF shows the circuit in operation. Red LED will blink if the light sensor detect sufficent light, otherwise, the green LED will blink.
+      </section>
+
+      <section>
+        <h2>Code Snippet</h2>
+        <pre><code>
+// set up pin 3 for red LED
+const int redPin = 3;
+// set up pin 5 for green LED
+const int greenPin = 5;
+// set up pin A0 to read analog signal from photoresistor
+const int sensorIn = A0;
+
+void setup() {
+  // set up red LED pin as output
+  pinMode(redPin, OUTPUT);
+  // set up green LED pin as output
+  pinMode(greenPin, OUTPUT);
+  // set up sensor pin as input
+  pinMode(sensorIn, INPUT);
+  // initialize serial communication at 9600 bits per second
+  Serial.begin(9600);
+}
+
+
+
+void loop() {
+  // initialize sensorValue variable
+  int sensorValue = 0;
+  // initialize mappedValue variable
+  int mappedValue = 0;
+  // set sensorValue to the analog input port reading from photoresistor
+  sensorValue = analogRead(sensorIn);
+  // constrain sensorValue range from 450 to 850
+  sensorValue = constrain(sensorValue, 450, 850);
+  // map the range of sensorValue from 450-850 to 0-255 to reflect the HZ range for LED
+  mappedValue = map(sensorValue, 450, 850, 0, 255);
+  // if the mappedValue is less than 150 (dark around the photoresistor)
+  if (mappedValue < 150) {
+    // Serial output to tell user the LED mode
+    Serial.println("Mode: GREEN fading (dark environment)");
+    // for loop to initialize the fading process
+    for (int i = 0; i < 255; i += 5) {
+      // turn off red LED
+      analogWrite(redPin, 0);
+      // turn on green LED and start fading process
+      analogWrite(greenPin, 255 - mappedValue - i);
+      // delay 5ms for us to see the fading process
+      delay(5);
+      // check if there's a increase in brightness
+      if (analogRead(sensorIn) > 600) {
+        // add 300 to i to get out off the fading loop
+        i =+ 300;
+      }
+    }
+  } 
+  // if the mappedValue is greater than 150 (bright around the photoresistor)
+  else {
+    // Serial output to tell user the LED mode 
+    Serial.println("Mode: RED fading (bright environment)");
+    // for loop to initialize the fading process
+    for (int i = 0; i <= 255; i += 5) {
+      // turn green LED off
+      analogWrite(greenPin, 0);
+      // turn red LED on and starting fading process
+      analogWrite(redPin, mappedValue - i);
+      // delay 10ms for us to see the fading process
+      delay(10);
+      // check if there's a decrease in brightness
+      if (analogRead(sensorIn) < 600) {
+        // add 300 to i to get out off the fading loop
+        i =+ 300;
+      }
+    }
+  }
+  // add a small delay to avoid unusual reading and reduce the stress on pin A0
+  delay(2);
+}
+
+        </code></pre>
+      </section>
+
+      
+      <section>
+        <h2>Additional Questions</h2>
+        <p><strong>1. In your voltage divider, can the variable resistor be either R1 or R2 or does it need to be one or the other? Justify your answer with example calculations.</strong> 
+          <br>Yes, variable resistor be either R1 or R2. The read range will just be different: 
+          <br>Using the equation V_out = V_in * R2 / (R1 + R2)
+          <br>when R1 is photoresistor, R1 bright = 1.9kΩ, R1 dark = 13.8kΩ, R2 = 10kΩ, V_in = 5V, V_out will be between 2.1V(bright) - 4.2V(dark)
+          <br>when R2 is photoresistor, R1 = 10kΩ, R1 bright = 1.9kΩ, R1 dark = 13.8kΩ, V_in = 5V, V_out will be between 0.8V(bright) - 2.9V(dark)</p>
+        <br><p><strong>2. Draw a graph where the x-axis is time and the y-axis is voltage. Plot the voltage at V-measure of your voltage divider of your shared gif.</strong></p>
+        <img src="A3 voltage graph.jpg" alt="voltage graph" class="photo" />
+        <br><p>
+          <strong>3. AnalogWrite and analogRead are respectively 8-bit and 10-bit values. Imagine you had 10-bit PWM and a 16-bit analog-to-digital converter instead. How would this change your map() code? Explain your answer.</strong> 
+          <br> 8-bit has value range 0-255, 10-bit has value range 0-1023, 16-bit has value range 0-65535. With this scale in mind, output range will be changed from 0-255 to 0-1023, input range will be (450-850) * 2 * 2 * 2 * 2 * 2 * 2 to 28000-54400.
+          <br> As a result, the updated value is map(sensorValue, 28000, 54400, 0, 1023)
+        </p>
+        <br>
+        <p><em>All documentation for Assignment 3 is included above.</em></p>
+      </section>
+    </main>
+  </body>
+</html>
