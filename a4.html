@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Oliver's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Oliver's Assignment 4!</h1>
+    <div class="header">
+    <main>
+      <section>
+        <h2>Circuit Photo</h2>
+        <img src="A4 circuit.jpeg" alt="LED Circuit Photo" class="photo" />
+        <p>
+          This is the circuit setup.
+        </p>
+      </section>
+
+      <section>
+        <h2>Circuit schematic</h2>
+        <img src="A4 schematic.jpg" alt="Circuit schematic" class="photo" />
+        <p>
+          This image shows the circuit schematic.
+        </p>
+      </section>
+
+      <section>
+        <h2>Circuit operation</h2>
+        <img src="A4.GIF" alt="LED circuit board operation" class="photo" />
+        <p>
+          This GIF shows the circuit in operation. Servo motor moves based on the distance read from the ultrasonic sensor.
+      </section>
+
+      <section>
+        <h2>Code Snippet</h2>
+        <pre><code>
+// import UltraSonic Distance Sensor libiary
+#include <HCSR04.h>
+// import Servo Motor libiary
+#include <Servo.h>
+// initialize UltraSonic Distance Sensor trigger pin as pin 9.
+const int trigPin = 9;
+// initialize UltraSonic Distance Sensor echo pin as pin 10.
+const int echoPin = 10;
+// initialize sensor that uses digital pins 9 and 10.
+UltraSonicDistanceSensor distanceSensor(trigPin, echoPin);
+// create Servo object to control a servo
+Servo myservo;
+// initialize servo on pin 6
+const int servoPin = 6;
+// value to input into the servo motor
+int val;
+// minimum sensor value
+int sensorMin;
+// maxim sensor value
+int sensorMax;
+
+void setup() {
+  // attaches the servo to servo pin.
+  myservo.attach(servoPin);
+  // initialize serial connection to print values from sensor.
+  Serial.begin(9600);
+  // notify user that minimum value will be recorded in 2 seconds
+  Serial.println("Recording minimum sensor value in 2 seconds");
+  // waits 2 seconds to read the lowest value
+  delay(2000);
+  // check for the lowest value you get
+  sensorMin = distanceSensor.measureDistanceCm();
+  // notify user the recorded sensorMin value
+  Serial.print("Record minimum value successful, sensorMin is ");
+  Serial.println(sensorMin);
+  // notify user that maxim value will be recorded in 2 seconds
+  Serial.println("Recording maxim sensor value in 2 seconds");
+  // waits for 2000 ms to read the higest value
+  delay(2000);
+  // check for the highest value you get
+  sensorMax = distanceSensor.measureDistanceCm();
+  // notify user the recorded sensorMax value
+  Serial.print("Record maxim value successful, sensorMax is ");
+  Serial.println(sensorMax);
+}
+
+void loop() {
+  // do a measurement using the sensor and record distance in centimeters.
+  val = distanceSensor.measureDistanceCm();
+  // check to see if distance value is greater than recorded maxim sensor value
+  if (val > sensorMax) {
+    // update maxim sensor value to the new value
+    sensorMax = val;
+    // print message to notify user the new maxim sensor value
+    Serial.print("sensorMax updated to ");
+    Serial.println(sensorMax);
+  }
+  // check to see if distance value is greater than recorded minimum sensor value
+  if (val < sensorMin) {
+    // update minimum sensor value to the new value
+    sensorMin = val;
+    // print message to notify user the new minimum sensor value
+    Serial.print("sensorMin updated to ");
+    Serial.println(sensorMin);
+  }
+  // scale the value for use with the servo
+  val = map(val, sensorMin, sensorMax, 0, 180);
+  // sets the servo position according to the scaled value
+  myservo.write(val);
+  // waits for 400 milliseconds to avoid clutter or inaccurate readings from UltraSonic Distance Sensor
+  delay(400);
+}
+        </code></pre>
+      </section>
+
+      
+      <section>
+        <h2>Additional Questions</h2>
+        <p><strong>1: Say you are using a servo motor you attach to pin 9. In your loop() you have the following code:
+
+void loop() {
+for (pos = 0; pos <= 180; pos += 1) {
+  myservo.write(pos); 
+  delay(100); 
+  }
+}
+
+Draw a graph with the x-axis as time and the y-axis as voltage at pin 9 with respect to ground.</strong> 
+        <img src="A4 Voltage vs Time.png" alt="voltage graph" class="photo" />
+        <br><p><strong>2: Your input device is slightly broken, leading it to give us an erroneous reading 1% of the time. How can we address this? Answer in (pseudo)code.</strong></p>
+        <pre><code>
+          int sensorValue;
+          int inputPin = A0;
+          int preiousValue;
+
+          void loop() {
+            sensorValue = analogRead(inputPin);
+            if (sensorValue > preiousValue*2.5 || sensorValue < preiousValue/3) {
+              sensorValue = preiousValue;
+            }
+            if (sensorValue < preiousValue/3) {
+              sensorValue = preiousValue;
+            }
+            preiousValue = sensorValue;
+          }
+        </code></pre>
+        <br><p>
+          <strong>3: Your input device is slightly noisy, leading the measurement to randomly deviate from the true measurement up or down by 10%. How can we address this? Answer in (pseudo)code.</strong></p>
+        <pre><code>
+          const int numReadings = 10;
+          int readings[numReadings];
+          int readIndex = 0;
+          int total = 0;
+          int average = 0;
+          int sensorValue;
+          int inputPin = A0;
+
+          void setup() {
+            for (int thisReading = 0; thisReading < numReadings; thisReading++) {
+              readings[thisReading] = 0;
+            }
+          }
+          void loop() {
+            sensorValue = analogRead(inputPin);
+            total = total - readings[readIndex];
+            readings[readIndex] = sensorValue;
+            total = total + readings[readIndex];
+            readIndex = readIndex + 1;
+
+            if (readIndex >= numReadings) {
+              readIndex = 0;
+            }
+
+            average = total / numReadings;
+          }
+          // reference: https://docs.arduino.cc/built-in-examples/analog/Smoothing/
+        </code></pre>
+        
+        <br>
+        <p><em>All documentation for Assignment 4 is included above.</em></p>
+      </section>
+    </main>
+  </body>
+</html>
