@@ -40,78 +40,59 @@
       <section>
         <h2>Code Snippet</h2>
         <pre><code>
-// import UltraSonic Distance Sensor libiary
-#include <HCSR04.h>
-// import Servo Motor libiary
-#include <Servo.h>
-// initialize UltraSonic Distance Sensor trigger pin as pin 9.
-const int trigPin = 9;
-// initialize UltraSonic Distance Sensor echo pin as pin 10.
-const int echoPin = 10;
-// initialize sensor that uses digital pins 9 and 10.
-UltraSonicDistanceSensor distanceSensor(trigPin, echoPin);
-// create Servo object to control a servo
-Servo myservo;
-// initialize servo on pin 6
-const int servoPin = 6;
-// value to input into the servo motor
-int val;
-// minimum sensor value
-int sensorMin;
-// maxim sensor value
-int sensorMax;
+// Import Capacitive Sensor library
+#include <CapacitiveSensor.h>
+
+// Create two capacitive sensor objects, with send pin on pin 4 and recieve pin on pin 2(yellow wire) an 6 (white wire)
+CapacitiveSensor   cs_4_2 = CapacitiveSensor(4,2);
+CapacitiveSensor   cs_4_6 = CapacitiveSensor(4,6);
+
+// Pin connect to gate pin on the transistor to control motor speed
+int motorPin = 9;
+// Variable to store motor speed
+int speed = 0;
 
 void setup() {
-  // attaches the servo to servo pin.
-  myservo.attach(servoPin);
-  // initialize serial connection to print values from sensor.
+  // Disable auto-calibration for both sensors
+  cs_4_2.set_CS_AutocaL_Millis(0xFFFFFFFF);
+  cs_4_6.set_CS_AutocaL_Millis(0xFFFFFFFF);
+
+  // Start serial communication for debugging
   Serial.begin(9600);
-  // notify user that minimum value will be recorded in 2 seconds
-  Serial.println("Recording minimum sensor value in 2 seconds");
-  // waits 2 seconds to read the lowest value
-  delay(2000);
-  // check for the lowest value you get
-  sensorMin = distanceSensor.measureDistanceCm();
-  // notify user the recorded sensorMin value
-  Serial.print("Record minimum value successful, sensorMin is ");
-  Serial.println(sensorMin);
-  // notify user that maxim value will be recorded in 2 seconds
-  Serial.println("Recording maxim sensor value in 2 seconds");
-  // waits for 2000 ms to read the higest value
-  delay(2000);
-  // check for the highest value you get
-  sensorMax = distanceSensor.measureDistanceCm();
-  // notify user the recorded sensorMax value
-  Serial.print("Record maxim value successful, sensorMax is ");
-  Serial.println(sensorMax);
+  // Set motor control pin as output
+  pinMode(motorPin, OUTPUT);
 }
 
 void loop() {
-  // do a measurement using the sensor and record distance in centimeters.
-  val = distanceSensor.measureDistanceCm();
-  // check to see if distance value is greater than recorded maxim sensor value
-  if (val > sensorMax) {
-    // update maxim sensor value to the new value
-    sensorMax = val;
-    // print message to notify user the new maxim sensor value
-    Serial.print("sensorMax updated to ");
-    Serial.println(sensorMax);
+  // Read capacitive sensor and record those value as total1 and total2
+  long total1 =  cs_4_2.capacitiveSensor(30);
+  long total2 =  cs_4_6.capacitiveSensor(30);
+
+  // if yellow wire(connect to pin 2) is touched
+  if(total1 > 100){
+    // Increase speed by 25
+    speed += 25;
+    // Capped the maxium speed to 50, capacitive sensor stopped working if speed go above 50
+    if (speed > 50) speed = 50;
+    // Send the new speed to the motor
+    analogWrite(motorPin, speed);
   }
-  // check to see if distance value is greater than recorded minimum sensor value
-  if (val < sensorMin) {
-    // update minimum sensor value to the new value
-    sensorMin = val;
-    // print message to notify user the new minimum sensor value
-    Serial.print("sensorMin updated to ");
-    Serial.println(sensorMin);
+  // if white wire(connect to pin 6) is touched
+  if(total2 > 100){
+    // Decrease speed by 25
+    speed -= 25;
+    //Set min as 0
+    if (speed < 0) speed = 0;
+    // Send the new speed to the motor
+    analogWrite(motorPin, speed);
   }
-  // scale the value for use with the servo
-  val = map(val, sensorMin, sensorMax, 0, 180);
-  // sets the servo position according to the scaled value
-  myservo.write(val);
-  // waits for 400 milliseconds to avoid clutter or inaccurate readings from UltraSonic Distance Sensor
-  delay(400);
+  
+  // Wait half a second to avoid clutter/inaccurate reading 
+  delay(500);
+  // Print the current speed for monitoring
+  Serial.println(speed);
 }
+
         </code></pre>
       </section>
 
