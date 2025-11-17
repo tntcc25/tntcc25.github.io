@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Oliver's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Oliver's Assignment 6!</h1>
+    <div class="header">
+    <main>
+      <section>
+        <h2>Circuit Photo</h2>
+        <img src="A6 circuit.jpeg" alt="LED Circuit Photo" class="photo" />
+        <p>
+          This is the circuit setup. The yellow and white wires are for the capacitve touch, touching yellow wire will turn on the motor and touching white wire will turn off the motor.
+        </p>
+      </section>
+
+      <section>
+        <h2>Circuit schematic</h2>
+        <img src="A5 schematic.png" alt="Circuit schematic" class="photo" />
+        <p>
+          This image shows the circuit schematic. I used an 1MΩ resistor for the capacitive touch to limit the current and also to create a measurable difference for the small capacitance changes caused by touch.
+        </p>
+        <br>
+        <strong>Transistor/motor voltage and current calculation:</strong><p>The MOSFET is rated for 32 A. The motor’s datasheet lists a current of 1.5 A at 6 V. In my code the maximum PWM duty is 50/255 ≈19.6%, so the motor’s effective voltage from a 12 V supply is 12 V × 0.196 ≈ 2.35 V. Scaling the 6 V current linearly gives 1.5 A × (2.35/6) ≈ 0.59 A.</p>
+      </section>
+
+      <section>
+        <h2>Circuit operation</h2>
+        <img src="A5.gif" alt="LED circuit board operation" class="photo" />
+        <p>
+          This GIF shows the circuit in operation. Motor speed increases when yellow wire is touched and decreases when white wire is touched.
+      </section>
+
+      <section>
+        <h2>Code Snippet</h2>
+        <pre><code>
+const int buttonPin = 2;
+const int LEDPin = 6;
+const int pot = A0;
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(buttonPin, INPUT);
+  pinMode(LEDPin, OUTPUT);
+  pinMode(pot, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  Serial.print(digitalRead(buttonPin));
+  Serial.print(",");
+  Serial.println(analogRead(pot));
+  if (Serial.available() > 0) {
+    int brightness = Serial.read();
+    Serial.println(brightness);
+    analogWrite(LEDPin, brightness);
+  }
+  delay(100);
+}
+        </code></pre>
+      </section>
+
+      
+      <section>
+        <h2>Additional Questions</h2>
+        <p><strong>1: This is the datasheet for the n-mosfet transistor: https://www.diodes.com/assets/Datasheets/DMT6009LCT.pdfLinks to an external site. What is the absolute maximum amount of current between pins 2 and 3?</strong> <br>
+          The absolute maximum amount of current between pins 2 and 3 is 37.2A. However, it does meantion that it can take 80A for a pulsed drain current.</p>
+        <br><p><strong>2: Draw a schematic for a circuit with using at least your arduino, a DC motor, a flyback diode, and capacitors between power and ground. Find parts with datasheets you could use for each of these schematic components.</strong></p>
+        <img src="A5 additional question2.png" alt="Additional Question 2 Schematic" class="photo" />
+        <p>DC motor: https://www.sparkfun.com/hobby-motor-gear.html
+        <br>Flyback Diode: https://www.onsemi.com/pdf/datasheet/1n4001-d.pdf
+        <br>Capacitors: 100uF 25V https://industrial.panasonic.com/cdbs/www-data/pdf/RDF0000/ABA0000C1259.pdf
+        </p>
+        <br><p>
+          <strong>3: Here is the datasheet for the L293D chip: https://www.ti.com/product/L293DLinks to an external site.. Draw a schematic using at least your arduino, this chip, and two motors. Write (pseudo) code that shows how you would move the motors both forward, both back, then one forward one back, and one back then forward.</strong></p>
+        <img src="A5 additional question 3.png" alt="Additional Question 3 Schematic" class="photo" />
+        <pre><code>
+          int motor1Pin1 = 1;
+          int motor1Pin2 = 2;
+          int motor2Pin1 = 3;
+          int motor2Pin2 = 4;
+          void setup() {
+            pinMode(motor1Pin1, OUTPUT);
+            pinMode(motor1Pin2, OUTPUT);
+            pinMode(motor2Pin1, OUTPUT);
+            pinMode(motor2Pin2, OUTPUT);
+          }
+          void loop() {
+            // both motors forward
+            digitalWrite(motor1Pin1, HIGH);
+            digitalWrite(motor1Pin2, LOW);
+            digitalWrite(motor2Pin1, HIGH);
+            digitalWrite(motor2Pin2, LOW);
+            delay(1000);
+
+            // both motors back
+            digitalWrite(motor1Pin1, LOW);
+            digitalWrite(motor1Pin2, HIGH);
+            digitalWrite(motor2Pin1, LOW);
+            digitalWrite(motor2Pin2, HIGH);
+            delay(1000);
+
+            // motor 1 forward, motor 2 back
+            digitalWrite(motor1Pin1, HIGH);
+            digitalWrite(motor1Pin2, LOW);
+            digitalWrite(motor2Pin1, LOW);
+            digitalWrite(motor2Pin2, HIGH);
+            delay(1000);
+
+            // motor 1 back, motor 2 forward
+            digitalWrite(motor1Pin1, LOW);
+            digitalWrite(motor1Pin2, HIGH);
+            digitalWrite(motor2Pin1, HIGH);
+            digitalWrite(motor2Pin2, LOW);
+            delay(1000);
+          }
+        </code></pre>
+        
+        <br>
+        <p><em>All documentation for Assignment 5 is included above.</em></p>
+      </section>
+    </main>
+  </body>
+</html>
