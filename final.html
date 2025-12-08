@@ -15,7 +15,7 @@
       <section>
         <h2>Project Proposal</h2>
         <strong>Title:</strong> Remote-Controlled Toy Car<br />
-        <p>This project involves creating a remote-controlled toy car using an Arduino Uno board.(update: I used an ESP32S3 board instead to enable bluetooth connection)</p>
+        <p>This project involves creating a remote-controlled toy car using an Arduino Uno board.(update: I used an ESP32S3 board in the actual project enable bluetooth connection)</p>
         <br /><h3>Anticipated Bill of Materials:</h3>
         <br /><p>- Red and green LED (indicating the operational status of the car)
           <br />- Remote control/receiver
@@ -54,20 +54,20 @@
       </section>
       <section>
         <h2>Final project operation:</h2>
-        <iframe width = "420" height="315" src="https://youtu.be/embed/0G8vEjjDqIE" title="Final Project Operation Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe width = "420" height="315" src="https://www.youtube.com/embed/0G8vEjjDqIE" title="Final Project Operation Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         <p>This video demonstrates my final project in action. The toy car is controlled remotely via Bluetooth, allowing it to move forward, backward (not shown in the demo due to weak motors), and steer left or right. The external wires are only used to supply 9V and 5V power to the control board and motors, since soldering a battery directly to the board proved difficult and the motors drained the battery very quickly.(I will talk about this more in my technical Implementation)</p>
       </section>
       <br/>
         <h1>Technical Implementation</h1>
       <section>
         <h2>schematics:</h2>
-        <img src="Final schematic.png" alt="Final Project Schematic" class="photo" />
+        <img src="Final schematics.png" alt="Final Project Schematic" class="photo" />
         <p>This image shows the circuit schematic. The ESP32S3 board receives commands from the phone via bluetooth and controlls motor via H Bridge, and the servo motor is connected directly to the board.</p>
       </section>
       <section>
         <h2>Circuit photo:</h2>
         <img src="Car circuit.jpeg" alt="Final Project Circuit Photo" class="photo" />
-        <p>This is the overview of my circuit from the top. Because the DC motors are placed in the belly of the car, you can only see four wires coming out of the hole here</p>
+        <p>This is the top-down view of my circuit. Since the DC motors are mounted in the belly of the car, only four wires are visible coming out of this opening.</p>
         <img src="Car belly.jpeg" alt="Final Project Circuit Photo" class="photo" />
         <p>This is the belly of the car. You can see the two DC motors and their wires going through the hole to connect to the H Bridge.</p>
         <img src="Car Board.jpeg" alt="Final Project Circuit Photo" class="photo" />
