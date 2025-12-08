@@ -22,33 +22,31 @@ function draw() {
 
    let str = port.readUntil("\n"); // Read from the port until the newline
    if (str.length == 0) return; // If we didn't read anything, return.
-    let message = str.trim().split(",");
-    const buttonPin = Number(message[0]);
-    const pot = Number(message[1]);
-    if (buttonPin === 0) {
-      background("darkcyan");
-      fill("white");
-      text("Press button to start", windowWidth / 2, windowHeight / 2);
-      port.write(2);
-    } else if (buttonPin === 1) {
-      translate(windowWidth/2, windowHeight/2);
-      background("purple");
-      fill("orange");
-      circle(0, 0, 200);
-      let d = dist(mouseX, mouseY, width / 2, height / 2);
-      let insideCircle = d < 100; // radius = 100
-      if (insideCircle) {
-        angleMode(DEGREES);
-        let rot = map(pot, 522, 1023, -90, 90);
-        rotate(rot);
-        fill("orange");
-        triangle(-100, 0, 100, 0, 0, -150);
-        fill("orange");
-        circle(0, 0, 200);
-        fill("orange");
-        let LedBrightness = int(rot + 90);
-        text(LedBrightness, 0, 0);
-        port.write(LedBrightness);
+    let message = str.trim().split(","); // Split the string into an array
+    const buttonPin = Number(message[0]);  // First value is button state
+    const pot = Number(message[1]); // Second value is potentiometer reading
+    if (buttonPin === 0) { // button not pressed
+      background("darkcyan"); // set background color
+      fill("white"); // set text color
+      text("Press button to start", windowWidth / 2, windowHeight / 2); // display instruction
+      port.write(2); // send 2 to Arduino (LED off)
+    } else if (buttonPin === 1) { // button pressed
+      translate(windowWidth/2, windowHeight/2); // move origin to center
+      background("purple"); // set background color
+      fill("orange"); // set shape color
+      circle(0, 0, 200); // draw circle at center
+      let d = dist(mouseX, mouseY, width / 2, height / 2); // distance from mouse to center
+      let insideCircle = d < 100; // check if mouse is inside circle
+      if (insideCircle) { // mouse is inside circle
+        angleMode(DEGREES); // set angle mode to degrees
+        let rot = map(pot, 522, 1023, -90, 90); // map potentiometer value to rotation angle
+        rotate(rot); // rotate by mapped angle
+        fill("orange"); // set triangle color
+        triangle(-100, 0, 100, 0, 0, -150); // draw triangle
+        fill("orange"); // set circle color
+        circle(0, 0, 200); // redraw circle to cover triangle center
+        let LedBrightness = int(rot + 90); // map rotation to LED brightness (0-180)
+        port.write(LedBrightness); // send brightness to Arduino
       }
     }
   }
@@ -95,3 +93,5 @@ function onConnectButtonClicked() {
     port.close();
   }
 }
+
+// refereced example code under button directory and class example code on servo motor
