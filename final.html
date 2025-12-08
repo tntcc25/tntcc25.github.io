@@ -9,7 +9,7 @@
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Oliver's final project!</h1>
+    <h1>Oliver's Final Project!</h1>
     <div class="header">
     <main>
       <section>
@@ -25,7 +25,7 @@
           <br />- Assorted resistors (for current-limiting)
           <br />- Some 3D printed parts (for the structure of the car)
         </p>
-        <br/ ><h3>Timeline and contingency plans:</h3>
+        <br/ ><h3>Timeline and Contingency Plans:</h3>
         <br /> <p>- RC controller being able to control DC motor and Servo motor
 <br />- Powertrain working
 <br />- 3D printed car model complete
@@ -39,7 +39,7 @@
       <br/>
       <h1>Final Porject Overview:</h1>
       <section>
-        <h2>Final project model photo:</h2>
+        <h2>Final project Model Photo:</h2>
         <img src="Car side.jpeg" alt="Final Project Photo" class="photo" />
         <p>This is a photo of my toy car model, the rear wheels are white and front wheel are black, all circuits are hidden under the cover</p>
       </section>
@@ -53,19 +53,19 @@
         </p>
       </section>
       <section>
-        <h2>Final project operation:</h2>
+        <h2>Final Project Operation:</h2>
         <iframe width = "840" height="630" src="https://www.youtube.com/embed/0G8vEjjDqIE" title="Final Project Operation Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         <p>This video demonstrates my final project in action. The toy car is controlled remotely via Bluetooth, allowing it to move forward, backward (not shown in the demo due to weak motors), and steer left or right. The external wires are only used to supply 9V and 5V power to the control board and motors, since soldering a battery directly to the board proved difficult and the motors drained the battery very quickly.(I will talk about this more in my technical Implementation)</p>
       </section>
       <br/>
         <h1>Technical Implementation</h1>
       <section>
-        <h2>schematics:</h2>
+        <h2>Schematics:</h2>
         <img src="Final schematics.png" alt="Final Project Schematic" class="photo" />
         <p>This image shows the circuit schematic. The ESP32S3 board receives commands from the phone via bluetooth and controlls motor via H Bridge, and the servo motor is connected directly to the board.</p>
       </section>
       <section>
-        <h2>Circuit photo:</h2>
+        <h2>Circuit Photos:</h2>
         <img src="Car circuit.jpeg" alt="Final Project Circuit Photo" class="photo" />
         <p>This is the top-down view of my circuit. Since the DC motors are mounted in the belly of the car, only four wires are visible coming out of this opening.</p> <br/>
         <img src="Car belly.jpeg" alt="Final Project Circuit Photo" class="photo" />
@@ -197,7 +197,7 @@ void loop() {} // Not needed for BLE connection in eps32, since its event-driven
         </code></pre>
       </section>
       <section>
-        <h2>Technical write up:</h2>
+        <h2>Technical Write-up:</h2>
           <p>My project focuses on creating a fully remote-controlled toy car, consisting of two main components: a wireless remote control and the car itself, which can move forward, backward, and turn left or right. 
             <br/>For the remote control, I used an ESP32-S3 board, which includes built-in Bluetooth and Wi-Fi. I set the ESP32-S3 board as the client so it can receive commands from a smartphone app via Bluetooth. I used the "BLE Scanner" app on my phone to send simple single-character commands ('F' for forward, 'B' for backward, 'L' for left, 'R' for right, and 'S' for stop).
             <br/>For the movement system, the car uses two DC motors for propulsion and a servo motor for steering. The DC motors are driven by an H-bridge, which controls motor direction based on the input signals it receives—for example, a HIGH signal on 1A and a LOW signal on 2A will rotate the motor clockwise. 
@@ -205,7 +205,7 @@ void loop() {} // Not needed for BLE connection in eps32, since its event-driven
       </section>
       <br/>
       <section>
-        <h2>Challenges I encountered:</h2>
+        <h2>Challenges I Encountered:</h2>
         <p><strong>1. No existing 3D model:</strong> <br/>
         When I started the project, I expected to find a pre-made 3D model of an ESP32-S3 controlled toy car that I could simply download and print. Unfortunately, none existed, so I had to design everything from scratch. The mechanical components—especially the steering mechanism—took the most time. Designing the frame and ensuring that all the parts fit together properly also required a lot of iteration. I ended up spending my entire Thanksgiving break creating the 3D model for the car.</p>
         <br/>
@@ -224,5 +224,8 @@ void loop() {} // Not needed for BLE connection in eps32, since its event-driven
       <p><strong>Lesson learned from this</strong> <br/>
       In the future, I will calculate the expected power consumption of all components before selecting a power source. This will help me choose batteries or power supplies that can meet the project's needs without frequent replacements.</p>
     </section>
+    <br/><br/>
+    <p><strong>All documentation for final assignment is included above. Thank you so much for reading through this. <br/>
+      Thank you to my amazing professors(Prof.Danli and Prof.Blair) can't do this without them!</strong></p>
     </main>
   </body>
