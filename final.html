@@ -54,7 +54,7 @@
       </section>
       <section>
         <h2>Final project operation:</h2>
-        <iframe width = "420" height="315" src="https://www.youtube.com/embed/0G8vEjjDqIE" title="Final Project Operation Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe width = "840" height="630" src="https://www.youtube.com/embed/0G8vEjjDqIE" title="Final Project Operation Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         <p>This video demonstrates my final project in action. The toy car is controlled remotely via Bluetooth, allowing it to move forward, backward (not shown in the demo due to weak motors), and steer left or right. The external wires are only used to supply 9V and 5V power to the control board and motors, since soldering a battery directly to the board proved difficult and the motors drained the battery very quickly.(I will talk about this more in my technical Implementation)</p>
       </section>
       <br/>
@@ -67,11 +67,11 @@
       <section>
         <h2>Circuit photo:</h2>
         <img src="Car circuit.jpeg" alt="Final Project Circuit Photo" class="photo" />
-        <p>This is the top-down view of my circuit. Since the DC motors are mounted in the belly of the car, only four wires are visible coming out of this opening.</p>
+        <p>This is the top-down view of my circuit. Since the DC motors are mounted in the belly of the car, only four wires are visible coming out of this opening.</p> <br/>
         <img src="Car belly.jpeg" alt="Final Project Circuit Photo" class="photo" />
-        <p>This is the belly of the car. You can see the two DC motors and their wires going through the hole to connect to the H Bridge.</p>
+        <p>This is the belly of the car. You can see the two DC motors and their wires going through the hole to connect to the H Bridge.</p> <br/>
         <img src="Car Board.jpeg" alt="Final Project Circuit Photo" class="photo" />
-        <p>This is a close up view on the ESP32S3 board and H Bridge. Since there's no space to use a big breadboard in the toy car, everything has to be cramped, please refer to the schematic if anything is unclear</p>
+        <p>This is a close-up view of the ESP32-S3 board and the H-bridge. Since there isn’t enough space inside the toy car for a full-size breadboard, everything had to be arranged very tightly. Please refer to the schematic for the pin layout of the ESP32-S3 and the L293D H-bridge.</p> <br/>
       </section>
       <section>
         <h2>Code Snippet:</h2>
@@ -94,7 +94,7 @@ Servo steering; //create steering object that connect to the ESP32Servo libiary
 #define SERVICE_UUID        "12345678-1234-1234-1234-123456789abc" // Store the blue tooth SERVICE_UUID for esp-32 board
 #define CHARACTERISTIC_UUID "abcd1234-1234-1234-1234-abcdef123456" // Store the blue tooth CHARACTERISTIC_UUID for esp-32 board
 
-class MyServerCallbacks : public BLEServerCallbacks { // Create a class called MyServerCallbacks, and use it to override the BLE library’s callback functions
+class MyServerCallbacks : public BLEServerCallbacks { // Create a class called MyServerCallbacks, and use it to override the BLE library’s default callback functions
   void onConnect(BLEServer* pServer) { // When connected to phone
     deviceConnected = true; // Write deviceConnected as True
   }
@@ -129,7 +129,7 @@ void right() { // send 20° to the servo so it turn right
 }
 // MOTOR CONTROL FUNCTIONS OVER
 
-class MyCallbacks : public BLECharacteristicCallbacks { // Create a class called MyCallbacks, and use it to override the BLE library’s callback functions
+class MyCallbacks : public BLECharacteristicCallbacks { // Create a class called MyCallbacks, and use it to override the BLE library’s default callback functions
   void onWrite(BLECharacteristic *pCharacteristic) {  // ESP32 BLE library calls this function internally whenever the board detect data from phone
     String value = pCharacteristic->getValue(); // Store the value from phone
     char cmd = value[0]; // First character of the BLE message
@@ -155,7 +155,7 @@ class MyCallbacks : public BLECharacteristicCallbacks { // Create a class called
         Serial.println("Stop"); 
         stopMotors();
       }
-      //print movement to the serial port and call specfic function to send command to the motors
+      //print movement to the serial port and call specfic motor control function to send command to the motors
   }
 };
 
@@ -163,7 +163,7 @@ void setup() {
   pinMode(IN1, OUTPUT);
   pinMode(IN2, OUTPUT);
   //set motor pins as OUTPUT
-  steering.attach(SERVO_PIN); // Attach the steering libiary to the servo pin
+  steering.attach(SERVO_PIN); // Attach the servo libiary to the servo pin
   steering.write(90); // Set steering to neutral
 
   Serial.begin(115200); // Start Serial communication
@@ -199,25 +199,29 @@ void loop() {} // Not needed for BLE connection in eps32, since its event-driven
       <section>
         <h2>Technical write up:</h2>
           <p>My project focuses on creating a fully remote-controlled toy car, consisting of two main components: a wireless remote control and the car itself, which can move forward, backward, and turn left or right. 
-            <br/>For the remote control, I used an ESP32-S3 board, which includes built-in Bluetooth and Wi-Fi. 
+            <br/>For the remote control, I used an ESP32-S3 board, which includes built-in Bluetooth and Wi-Fi. I set the ESP32-S3 board as the client so it can receive commands from a smartphone app via Bluetooth. I used the "BLE Scanner" app on my phone to send simple single-character commands ('F' for forward, 'B' for backward, 'L' for left, 'R' for right, and 'S' for stop).
             <br/>For the movement system, the car uses two DC motors for propulsion and a servo motor for steering. The DC motors are driven by an H-bridge, which controls motor direction based on the input signals it receives—for example, a HIGH signal on 1A and a LOW signal on 2A will rotate the motor clockwise. 
             <br/>The servo motor is connected directly to the ESP32-S3, which controls its position by sending PWM signals.</p>
       </section>
+      <br/>
       <section>
         <h2>Challenges I encountered:</h2>
         <p><strong>1. No existing 3D model:</strong> <br/>
         When I started the project, I expected to find a pre-made 3D model of an ESP32-S3 controlled toy car that I could simply download and print. Unfortunately, none existed, so I had to design everything from scratch. The mechanical components—especially the steering mechanism—took the most time. Designing the frame and ensuring that all the parts fit together properly also required a lot of iteration. I ended up spending my entire Thanksgiving break creating the 3D model for the car.</p>
-        <p><strong>lesson learned from this</strong> <br/>
+        <br/>
+        <p><strong>Lesson learned from this</strong> <br/>
         I’m really proud that I designed a fully functional 3D-printed toy car. However, for the scope of a class project, I should have done more research and created a time estimate for each major component before starting. If I had known certain parts would take significantly longer, I would have preferred to pivot early rather than rush to building a half-working prototype.</p>
       <br/>
       <P><strong>2. 6V Motor doesn't have enough torque to power the car</strong></P> <br/>
       <p>During testing, I found that the 6V DC motors I used didn’t provide enough torque to move the car. I was frustrated because I had already 3D printed the entire car frame and assembled all the components. I was planning to switch to a 12V motor, but the size difference between them means that the new motor will not fit in the frame. I had to design a new model but I didn't have time to print it and implemented it</p>
-      <p><strong>lesson learned from this</strong> <br/>
+      <br/>
+      <p><strong>Lesson learned from this</strong> <br/>
       In the future, I will prototype and test all mechanical components before finalizing the design. This way, I can ensure that everything works as intended and avoid last-minute changes that could jeopardize the project timeline.</p>
       <br/>
       <p><strong>3. Power comsumption when using batteries is abysmal</strong></p> <br/>
       <p>During testing, I found that the motors drained 9V batteries extremely quickly—one battery lasted less than five minutes when both motors were running at full power. Since each 9V battery costs about $4, I switched to an external power supply for testing. Going forward, I think using rechargeable batteries would be a better solution, and I plan to implement that as I improve the project after this class.</p>
-      <p><strong>lesson learned from this</strong> <br/>
+      <br/>
+      <p><strong>Lesson learned from this</strong> <br/>
       In the future, I will calculate the expected power consumption of all components before selecting a power source. This will help me choose batteries or power supplies that can meet the project's needs without frequent replacements.</p>
     </section>
     </main>
