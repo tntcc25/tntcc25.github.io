@@ -15,13 +15,13 @@
       <section>
         <h2>Project Proposal</h2>
         <strong>Title:</strong> Remote-Controlled Toy Car<br />
-        <p>This project involves creating a remote-controlled toy car using an Arduino Uno board.</p>
+        <p>This project involves creating a remote-controlled toy car using an Arduino Uno board.(update: I used an ESP32S3 board instead to enable bluetooth connection)</p>
         <br /><h3>Anticipated Bill of Materials:</h3>
         <br /><p>- Red and green LED (indicating the operational status of the car)
           <br />- Remote control/receiver
           <br />- DC motor (for power)
           <br />- Servo motor (for steering)
-          <br />- Transistors (for throttle control)
+          <br />- H Bridge (for throttle control)
           <br />- Assorted resistors (for current-limiting)
           <br />- Some 3D printed parts (for the structure of the car)
         </p>
@@ -36,3 +36,28 @@
           this is the final project setup. The toy car is controlled by a remote control that communicates with the Arduino Uno board. The car has DC motors for movement and a servo motor for steering.
         </p>
       </section>
+      <br/>
+      <h1>Final Porject Overview:</h1>
+      <section>
+        <h2>Final project model photo:</h2>
+        <img src="Car side.jpeg" alt="Final Project Photo" class="photo" />
+        <p>This is a photo of my toy car model, the rear wheels are white and front wheel are black, all circuits are hidden under the cover</p>
+      </section>
+      <section>
+        <h2>Actual materials implemented in this project:</h2>
+        <p> - Remote control/receiver (ESP32S3 board)
+          <br />- 2 DC motors (for power)
+          <br />- 1 Servo motor (for steering)
+          <br />- H Bridge (to control the direction of the DC motors)
+          <br />- 3D printed parts (for the structure of the car)
+        </p>
+      </section>
+      <section>
+        <h2>Final project operation:</h2>
+        <iframe width = "420" height="315" src="https://youtu.be/embed/0G8vEjjDqIE" title="Final Project Operation Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <p>This video shows the final project in operation. The toy car is controlled remotely via bluetooth, allowing it to move forward, backward(didn't show in the demo due to weak motors), and steer left or right.</p>
+      </section>
+      <br/>
+        <h1>Technical Implementation</h1>
+      <section>
+        <h2>schematics:</h2>
